@@ -1,0 +1,28 @@
+program Gerasimov;
+
+
+
+
+
+
+
+
+
+{$R *.dres}
+
+uses
+  Vcl.Forms,
+  UnitMain in 'UnitMain.pas' {FormMain},
+  UnitSettings in 'UnitSettings.pas' {FormSettings},
+  UnitHelp in 'UnitHelp.pas' {Form2};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TFormMain, FormMain);
+  Application.CreateForm(TFormSettings, FormSettings);
+  Application.CreateForm(TForm2, Form2);
+  Application.Run;
+end.
