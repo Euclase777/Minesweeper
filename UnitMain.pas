@@ -49,7 +49,6 @@ var
   MinesLocation:array of array of integer;
   TileStates:array of array of integer;
   TileMouseX, TileMouseY:integer;
-  BitMapBomb : TBitMap;
 
 implementation
 
@@ -429,7 +428,6 @@ begin
   BtnRestart.ImageIndex:=0;
   MinesGend:=False;
   draw();
-  BitMapBomb:=TBitmap.Create;
   recount;
   PanelTimer.Caption:='000';
 end;

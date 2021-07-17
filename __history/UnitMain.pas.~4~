@@ -49,6 +49,7 @@ var
   MinesLocation:array of array of integer;
   TileStates:array of array of integer;
   TileMouseX, TileMouseY:integer;
+  BitMapBomb : TBitMap;
 
 implementation
 
@@ -56,7 +57,7 @@ implementation
 
 uses UnitHelp, UnitSettings;
 
-//Ð½Ð°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ¸
+//íàñòðîéêè
 procedure TFormMain.OnClickHelp(Sender: TObject);
 begin
 UnitHelp.FormHelp.ShowModal;
@@ -72,20 +73,20 @@ begin
   result := Format('%.*d', [Length, Number]) ;
 end;
 
-//Ð¿ÐµÑ€ÐµÑÑ‡Ñ‘Ñ‚ Ð±Ð¾Ð¼Ð±
+//ïåðåñ÷¸ò áîìá
 procedure recount;
 begin
   FormMain.PanelBombs.Caption:=AddLeadZero(MinesAm-flags,3);
 end;
 
-//Ð¾Ð¿Ñ€ÐµÐ´ÐµÐ»ÑÐµÑ‚ Ð½Ð°Ð¶Ð°Ñ‚ÑƒÑŽ ÐºÐ»ÐµÑ‚ÐºÑƒ
+//îïðåäåëÿåò íàæàòóþ êëåòêó
 procedure TileMouseCoords;
 begin
   TileMouseX:=(Mouse.CursorPos.X-FormMain.Left-24) div 32;
   TileMouseY:=(Mouse.CursorPos.Y-FormMain.Top-154) div 32;
 end;
 
-//Ñ€Ð¸ÑÑƒÐµÑ‚ Ð±Ð¾Ð¼Ð±Ñ‹
+//ðèñóåò áîìáû
 procedure Bomb(TileX:integer; TileY:integer);
 var
 i,j:integer;
@@ -121,7 +122,7 @@ with FormMain.PaintBox, FormMain.PaintBox.Canvas do
     end;
 end;
 
-//Ñ€Ð¸ÑÑƒÐµÑ‚ Ñ†Ð¸Ñ„Ñ€Ñ‹
+//ðèñóåò öèôðû
 procedure Number(X:integer; Y:integer);
 begin
   with FormMain.PaintBox, FormMain.PaintBox.Canvas do begin
@@ -221,7 +222,7 @@ begin
   end;
 end;
 
-//Ð¾Ñ‚ÐºÑ€Ñ‹Ð²Ð°ÐµÑ‚ ÐºÐ»ÐµÑ‚ÐºÑƒ
+//îòêðûâàåò êëåòêó
 procedure openTile(TileX:integer;TileY:integer);
 var
 i,j:integer;
@@ -237,7 +238,7 @@ begin
       Rectangle(32*TileX,32*TileY,32*(TileX+1)-1,32*(TileY+1)-1);
     end;
 
-    //Ð¾Ñ‚ÐºÑ€Ñ‹Ð²Ð°Ñ‚ÑŒ Ð¿ÑƒÑÑ‚Ñ‹Ðµ Ð¿Ð¾ÑÐ»ÐµÐ´Ð¾Ð²Ð°Ñ‚ÐµÐ»ÑŒÐ½Ð¾
+    //îòêðûâàòü ïóñòûå ïîñëåäîâàòåëüíî
     if MinesLocation[TileX,TileY]=0 then begin
       for i := (TileX-1) to (TileX+1) do begin
         for j := (TileY-1) to (TileY+1) do begin
@@ -248,25 +249,25 @@ begin
       end;
     end;
 
-    //Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚ÑŒ Ð±Ð¾Ð¼Ð±Ñƒ
+    //îòêðûòü áîìáó
     if MinesLocation[TileX, TileY]=9 then begin
       FormMain.BtnRestart.ImageIndex:=4;
       Bomb(TileX, TileY);
     end;
 
-    //Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚ÑŒ Ñ†Ð¸Ñ„Ñ€Ñƒ
+    //îòêðûòü öèôðó
     if (MinesLocation[TileX, TileY]>0)and(MinesLocation[TileX, TileY]<9) then begin
       Number(TileX,TileY);
     end;
 
-    //Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð½Ð° Ð¿Ð¾Ð±ÐµÐ´Ñƒ
+    //ïðîâåðêà íà ïîáåäó
     if (openTiles)=(xs*ys-MinesAm) then FormMain.BtnRestart.ImageIndex:=3;
 
 
   end;
 end;
 
-//ÑÑ‡Ð¸Ñ‚Ð°ÐµÑ‚ ÑÐºÐ¾Ð»ÑŒÐºÐ¾ Ð±Ð¾Ð¼Ð± Ð²Ð¾ÐºÑ€ÑƒÐ³
+//ñ÷èòàåò ñêîëüêî áîìá âîêðóã
 procedure pcount(x:integer;y:integer);
 var
 count:integer;
@@ -283,7 +284,7 @@ count:=0;
  MinesLocation[x,y]:=count;
 end;
 
-//Ð³ÐµÐ½ÐµÑ€Ð°Ñ†Ð¸Ñ
+//ãåíåðàöèÿ
 procedure generate(Amount:integer);
 var
 MinesSpawned:integer;
@@ -291,18 +292,18 @@ i,j:integer;
 begin
   randomize;
   MinesSpawned:=0;
-  //ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ñ‚Ð°Ð±Ð»Ð¸Ñ†Ñ‹
+  //ñîçäàíèå òàáëèöû
   SetLength(MinesLocation,xs);
   SetLength(TileStates, xs);
   for i := 0 to xs-1 do begin
     SetLength(MinesLocation[i],ys);
     SetLength(TileStates[i], ys);
   end;
-  //Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð±Ð¾Ð¼Ð±
+  //äîáàâëåíèå áîìá
   while MinesSpawned < MinesAm do begin
     MinesLocation[random(xs-1),random(ys-1)]:=9;
 
-    //Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð½Ðµ Ð¿Ñ€Ð¾Ð¸Ð³Ñ€Ð°Ñ‚ÑŒ Ñ Ð¿ÐµÑ€Ð²Ð¾Ð³Ð¾ ÐºÐ»Ð¸ÐºÐ°
+    //÷òîáû íå ïðîèãðàòü ñ ïåðâîãî êëèêà
     if MinesLocation[TileMouseX,TileMouseY]=9 then
     MinesLocation[TileMouseX,TileMouseY]:=0;
 
@@ -317,7 +318,7 @@ begin
     end;
   end;
 
-  //Ð¾Ñ‚Ð¼ÐµÑ‚Ð¸Ñ‚ÑŒ Ð²ÑÐµ ÐºÐ»ÐµÑ‚ÐºÐ¸ Ð·Ð°ÐºÑ€Ñ‹Ñ‚Ñ‹Ð¼Ð¸
+  //îòìåòèòü âñå êëåòêè çàêðûòûìè
   for i := 0 to xs-1 do begin
     for j := 0 to ys-1 do begin
     TileStates[i,j]:=1;
@@ -326,7 +327,7 @@ begin
   MinesGend:=True;
 end;
 
-//Ð¾Ñ‡Ð¸Ñ‰Ð°ÐµÑ‚ ÐºÐ»ÐµÑ‚ÐºÑƒ
+//î÷èùàåò êëåòêó
 procedure Clear(X:integer;Y:integer);
 begin
   with FormMain.PaintBox, FormMain.PaintBox.Canvas do
@@ -337,7 +338,7 @@ begin
     end;
 end;
 
-//Ñ€Ð¸ÑÑƒÐµÑ‚ Ñ„Ð»Ð°Ð³
+//ðèñóåò ôëàã
 procedure Flag(TileX:integer;TileY:integer);
 begin
 with FormMain.PaintBox, FormMain.PaintBox.Canvas do
@@ -357,7 +358,7 @@ with FormMain.PaintBox, FormMain.PaintBox.Canvas do
     end;
 end;
 
-//Ñ€Ð¸ÑÑƒÐµÑ‚ Ð²Ð¾Ð¿Ñ€Ð¾Ñ
+//ðèñóåò âîïðîñ
 procedure Question(X:integer;Y:integer);
 begin
   with FormMain.PaintBox, FormMain.PaintBox.Canvas do
@@ -373,7 +374,7 @@ begin
     end;
 end;
 
-//Ñ€Ð¸ÑÑƒÐµÑ‚ Ð¿Ð¾Ð»Ðµ
+//ðèñóåò ïîëå
 procedure draw;
 var
 i,j:integer;
@@ -405,13 +406,13 @@ with FormMain.PaintBox, FormMain.PaintBox.canvas do
   end;
 end;
 
-//ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð¿Ð¾Ð»Ñ
+//ñîçäàíèå ïîëÿ
 procedure TFormMain.GameFieldDraw(Sender: TObject);
 begin
   draw;
 end;
 
-//Ñ€ÐµÑÑ‚Ð°Ñ€Ñ‚
+//ðåñòàðò
 procedure TFormMain.RestartGame(Sender: TObject);
 var
 i,j:integer;
@@ -428,15 +429,16 @@ begin
   BtnRestart.ImageIndex:=0;
   MinesGend:=False;
   draw();
+  BitMapBomb:=TBitmap.Create;
   recount;
   PanelTimer.Caption:='000';
 end;
 
-//Ñ„Ð»Ð°Ð³/Ð²Ð¾Ð¿Ñ€Ð¾Ñ
+//ôëàã/âîïðîñ
 procedure SwitchTileState(X:integer;Y:integer);
 begin
   case TileStates[TileMouseX,TileMouseY] of
-  //Ñ„Ð»Ð°Ð³
+  //ôëàã
     1:begin
     TileStates[TileMouseX,TileMouseY]:=-1;
     Clear(TileMouseX,TileMouseY);
@@ -444,7 +446,7 @@ begin
     inc(flags);
     recount;
     end;
-  //Ð²Ð¾Ð¿Ñ€Ð¾Ñ
+  //âîïðîñ
     -1: begin
     TileStates[TileMouseX,TileMouseY]:=-2;
     Clear(TileMouseX,TileMouseY);
@@ -452,7 +454,7 @@ begin
     dec(flags);
     recount;
     end;
-  //Ð¿ÑƒÑÑ‚Ð¾Ñ‚Ð°
+  //ïóñòîòà
     -2:begin
     TileStates[TileMouseX,TileMouseY]:=1;
     Clear(TileMouseX,TileMouseY);
@@ -460,7 +462,7 @@ begin
   end;
 end;
 
-//Ð¿ÐºÐ¼ ÐºÐ»ÐµÑ‚ÐºÑƒ
+//ïêì êëåòêó
 procedure TFormMain.TileFlag(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
@@ -472,7 +474,7 @@ begin
   end;
 end;
 
-//Ð»ÐºÐ¼ ÐºÐ»ÐµÑ‚ÐºÑƒ
+//ëêì êëåòêó
 procedure TFormMain.TileOpen(Sender: TObject);
 begin
   TileMouseCoords;
@@ -480,7 +482,7 @@ begin
   openTile(TileMouseX,TileMouseY);
 end;
 
-//Ñ‚Ð°Ð¹Ð¼ÐµÑ€
+//òàéìåð
 procedure TFormMain.TimerInc(Sender: TObject);
 begin
   if MinesGend then begin
