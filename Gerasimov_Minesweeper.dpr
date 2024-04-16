@@ -8,7 +8,7 @@ program Gerasimov_Minesweeper;
 
 
 
-{$R *.dres}
+
 
 uses
   Vcl.Forms,

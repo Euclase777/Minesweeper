@@ -24,6 +24,8 @@ type
     Timer1: TTimer;
     PanelBombs: TPanel;
     PanelTimer: TPanel;
+    ImageListTiles: TImageList;
+    ImageListWalls: TImageList;
     procedure GameFieldDraw(Sender: TObject);
     procedure TileOpen(Sender: TObject);
     procedure RestartGame(Sender: TObject);
@@ -32,6 +34,7 @@ type
     procedure OnClickSettings(Sender: TObject);
     procedure TimerInc(Sender: TObject);
     procedure OnClickHelp(Sender: TObject);
+    procedure GameStart(Sender: TObject);
   private
     { Private declarations }
   public
@@ -49,6 +52,7 @@ var
   MinesLocation:array of array of integer;
   TileStates:array of array of integer;
   TileMouseX, TileMouseY:integer;
+  Blocks: integer = 0;
 
 implementation
 
@@ -56,7 +60,16 @@ implementation
 
 uses UnitHelp, UnitSettings;
 
-//настройки
+procedure TFormMain.GameStart(Sender: TObject);
+var
+i:integer;
+begin
+  setLength(TileStates,xs);
+  for i := 0 to xs-1 do begin
+    setLength(TileStates[i],ys);
+  end;
+end;
+
 procedure TFormMain.OnClickHelp(Sender: TObject);
 begin
 UnitHelp.FormHelp.ShowModal;
@@ -85,157 +98,16 @@ begin
   TileMouseY:=(Mouse.CursorPos.Y-FormMain.Top-154) div 32;
 end;
 
-//рисует бомбы
-procedure Bomb(TileX:integer; TileY:integer);
-var
-i,j:integer;
-begin
-with FormMain.PaintBox, FormMain.PaintBox.Canvas do
-    begin
-      Pen.Color:=clRed;
-      Brush.Color:=clRed;
-      Pen.Width:=2;
-      Rectangle(32*TileX+2,32*TileY+2,32*(TileX+1)-2,32*(TileY+1)-2);
-      for i := 0 to (xs-1) do begin
-        for j := 0 to (ys-1) do begin
-          if MinesLocation[i,j]=9 then begin
-            Pen.Color:=clBlack;
-            Brush.Color:=clBlack;
-            Pen.Width:=1;
-            Rectangle(32*i+11,32*j+7,32*i+21,32*j+25);
-            Rectangle(32*i+9,32*j+9,32*i+23,32*j+23);
-            Rectangle(32*i+7,32*j+11,32*i+25,32*j+21);
-            Rectangle(32*i+3,32*j+15,32*i+29,32*j+17);
-            Rectangle(32*i+15,32*j+3,32*i+17,32*j+29);
-            Rectangle(32*i+7,32*j+7,32*i+9,32*j+9);
-            Rectangle(32*i+23,32*j+7,32*i+25,32*j+9);
-            Rectangle(32*i+7,32*j+23,32*i+9,32*j+25);
-            Rectangle(32*i+23,32*j+23,32*i+25,32*j+25);
-            Pen.Color:=clWhite;
-            Brush.Color:=clWhite;
-            Rectangle(32*i+11,32*j+11,32*i+15,32*j+15);
-          end;
-        end;
-      end;
-
-    end;
-end;
-
-//рисует цифры
-procedure Number(X:integer; Y:integer);
-begin
-  with FormMain.PaintBox, FormMain.PaintBox.Canvas do begin
-    case MinesLocation[X,Y] of
-      1:begin
-      Pen.Color:=clBlue;
-      Brush.Color:=clBlue;
-
-      Rectangle(32*X+9,32*Y+11,32*X+11,32*Y+13);
-      Rectangle(32*X+11,32*Y+9,32*X+13,32*Y+13);
-      Rectangle(32*X+13,32*Y+7,32*X+19,32*Y+21);
-      Rectangle(32*X+15,32*Y+5,32*X+19,32*Y+7);
-      Rectangle(32*X+9,32*Y+21,32*X+23,32*Y+25);
-      end;
-
-      2:begin
-      Pen.Color:=clGreen;
-      Brush.Color:=clGreen;
-
-      Rectangle(32*X+5,32*Y+7,32*X+11,32*Y+11);
-      Rectangle(32*X+7,32*Y+5,32*X+23,32*Y+9);
-      Rectangle(32*X+19,32*Y+7,32*X+25,32*Y+13);
-      Rectangle(32*X+15,32*Y+13,32*X+23,32*Y+15);
-      Rectangle(32*X+11,32*Y+15,32*X+21,32*Y+17);
-      Rectangle(32*X+7,32*Y+17,32*X+17,32*Y+19);
-      Rectangle(32*X+5,32*Y+19,32*X+13,32*Y+21);
-      Rectangle(32*X+5,32*Y+21,32*X+25,32*Y+25);
-      end;
-
-      3:begin
-      Pen.Color:=clRed;
-      Brush.Color:=clRed;
-
-      Rectangle(32*X+5,32*Y+5,32*X+23,32*Y+9);
-      Rectangle(32*X+19,32*Y+7,32*X+25,32*Y+13);
-      Rectangle(32*X+11,32*Y+13,32*X+23,32*Y+17);
-      Rectangle(32*X+19,32*Y+17,32*X+25,32*Y+23);
-      Rectangle(32*X+5,32*Y+21,32*X+23,32*Y+25);
-      end;
-
-      4:begin
-      Pen.Color:=clNavy;
-      Brush.Color:=clNavy;
-
-      Rectangle(32*X+9,32*Y+5,32*X+15,32*Y+9);
-      Rectangle(32*X+7,32*Y+9,32*X+13,32*Y+13);
-      Rectangle(32*X+5,32*Y+13,32*X+25,32*Y+17);
-      Rectangle(32*X+17,32*Y+5,32*X+23,32*Y+25);
-      end;
-
-      5:begin
-      Pen.Color:=clMaroon;
-      Brush.Color:=clMaroon;
-
-      Rectangle(32*X+5,32*Y+5,32*X+25,32*Y+9);
-      Rectangle(32*X+5,32*Y+9,32*X+11,32*Y+13);
-      Rectangle(32*X+5,32*Y+13,32*X+23,32*Y+17);
-      Rectangle(32*X+19,32*Y+15,32*X+25,32*Y+23);
-      Rectangle(32*X+5,32*Y+21,32*X+23,32*Y+25);
-      end;
-
-      6:begin
-      Pen.Color:=clTeal;
-      Brush.Color:=clTeal;
-
-      Rectangle(32*X+7,32*Y+5,32*X+23,32*Y+9);
-      Rectangle(32*X+5,32*Y+7,32*X+11,32*Y+23);
-      Rectangle(32*X+7,32*Y+21,32*X+23,32*Y+25);
-      Rectangle(32*X+19,32*Y+15,32*X+25,32*Y+23);
-      Rectangle(32*X+11,32*Y+13,32*X+23,32*Y+17);
-      end;
-
-      7:begin
-      Pen.Color:=clBlack;
-      Brush.Color:=clBlack;
-
-      Rectangle(32*X+5,32*Y+5,32*X+25,32*Y+9);
-      Rectangle(32*X+19,32*Y+9,32*X+25,32*Y+13);
-      Rectangle(32*X+17,32*Y+13,32*X+23,32*Y+17);
-      Rectangle(32*X+15,32*Y+17,32*X+21,32*Y+21);
-      Rectangle(32*X+13,32*Y+21,32*X+19,32*Y+25);
-      end;
-
-      8:begin
-      Pen.Color:=clGray;
-      Pen.Color:=clGray;
-
-      Rectangle(32*X+7,32*Y+5,32*X+23,32*Y+9);
-      Rectangle(32*X+7,32*Y+21,32*X+23,32*Y+25);
-      Rectangle(32*X+7,32*Y+13,32*X+23,32*Y+17);
-      Rectangle(32*X+5,32*Y+7,32*X+11,32*Y+13);
-      Rectangle(32*X+19,32*Y+7,32*X+25,32*Y+13);
-      Rectangle(32*X+5,32*Y+17,32*X+11,32*Y+23);
-      Rectangle(32*X+19,32*Y+17,32*X+25,32*Y+23);
-      end;
-    end;
-  end;
-end;
-
 //открывает клетку
 procedure openTile(TileX:integer;TileY:integer);
 var
 i,j:integer;
 begin
-  if ((TileStates[TileX,TileY]=1)or(TileStates[TileX,TileY]=-2)) then begin
+  if (TileStates[TileX,TileY]=1)or(TileStates[TileX,TileY]=-2) then begin
     TileStates[TileX,TileY]:=0;
     inc(openTiles);
 
-    with FormMain.PaintBox, FormMain.PaintBox.Canvas do
-    begin
-      Pen.Color:=clBtnShadow;
-      Brush.Color:=clSilver;
-      Rectangle(32*TileX,32*TileY,32*(TileX+1)-1,32*(TileY+1)-1);
-    end;
+    FormMain.ImageListTiles.Draw(FormMain.PaintBox.Canvas,TileX*32,TileY*32,0,True);
 
     //открывать пустые последовательно
     if MinesLocation[TileX,TileY]=0 then begin
@@ -251,18 +123,16 @@ begin
     //открыть бомбу
     if MinesLocation[TileX, TileY]=9 then begin
       FormMain.BtnRestart.ImageIndex:=4;
-      Bomb(TileX, TileY);
+      FormMain.ImageListTiles.Draw(FormMain.PaintBox.Canvas,TileX*32,TileY*32,14,True);
     end;
 
     //открыть цифру
     if (MinesLocation[TileX, TileY]>0)and(MinesLocation[TileX, TileY]<9) then begin
-      Number(TileX,TileY);
+      FormMain.ImageListTiles.Draw(FormMain.PaintBox.Canvas,TileX*32,TileY*32,MinesLocation[TileX,TileY],True);
     end;
 
     //проверка на победу
-    if (openTiles)=(xs*ys-MinesAm) then FormMain.BtnRestart.ImageIndex:=3;
-
-
+    if (openTiles)=(xs*ys-MinesAm-Blocks) then FormMain.BtnRestart.ImageIndex:=3;
   end;
 end;
 
@@ -275,7 +145,7 @@ begin
 count:=0;
  for i := (x-1) to (x+1) do begin
    for j := (y-1) to (y+1) do begin
-     if ((i>-1)and(j>-1)and(i<xs-1)and(j<ys-1))then begin
+     if ((i>-1)and(j>-1)and(i<xs)and(j<ys))then begin
        if MinesLocation[i,j]=9 then inc(count);
      end;
    end;
@@ -300,7 +170,7 @@ begin
   end;
   //добавление бомб
   while MinesSpawned < MinesAm do begin
-    MinesLocation[random(xs-1),random(ys-1)]:=9;
+    MinesLocation[random(xs),random(ys)]:=9;
 
     //чтобы не проиграть с первого клика
     if MinesLocation[TileMouseX,TileMouseY]=9 then
@@ -309,6 +179,10 @@ begin
     MinesSpawned:=0;
     for i := 0 to xs-1 do begin
       for j := 0 to ys-1 do begin
+        if (TileStates[i,j]=2) and (MinesLocation[i,j]=9) then begin
+          MinesLocation[i,j]:=0;
+          MinesSpawned:=MinesSpawned-1;
+        end;
         if (MinesLocation[i,j]=9) then begin
         inc(MinesSpawned);
         end
@@ -320,57 +194,11 @@ begin
   //отметить все клетки закрытыми
   for i := 0 to xs-1 do begin
     for j := 0 to ys-1 do begin
-    TileStates[i,j]:=1;
+    if TileStates[i,j]<2 then
+      TileStates[i,j]:=1;
     end;
   end;
   MinesGend:=True;
-end;
-
-//очищает клетку
-procedure Clear(X:integer;Y:integer);
-begin
-  with FormMain.PaintBox, FormMain.PaintBox.Canvas do
-    begin
-      Pen.Color:=clSilver;
-      Brush.Color:=clSilver;
-      Rectangle(32*X+3,32*Y+3,32*X+27,32*Y+27);
-    end;
-end;
-
-//рисует флаг
-procedure Flag(TileX:integer;TileY:integer);
-begin
-with FormMain.PaintBox, FormMain.PaintBox.Canvas do
-    begin
-      Pen.Color:=clRed;
-      Brush.Color:=clRed;
-      Pen.Width:=1;
-      Rectangle(32*TileX+13,32*TileY+5,32*TileX+17,32*TileY+15);
-      Rectangle(32*TileX+7,32*TileY+9,32*TileX+9,32*TileY+11);
-      Rectangle(32*TileX+9,32*TileY+7,32*TileX+13,32*TileY+13);
-
-      Pen.Color:=clBlack;
-      Brush.Color:=clBlack;
-      Rectangle(32*TileX+15,32*TileY+15,32*TileX+17,32*TileY+19);
-      Rectangle(32*TileX+11,32*TileY+19,32*TileX+19,32*TileY+21);
-      Rectangle(32*TileX+7,32*TileY+21,32*TileX+23,32*TileY+25);
-    end;
-end;
-
-//рисует вопрос
-procedure Question(X:integer;Y:integer);
-begin
-  with FormMain.PaintBox, FormMain.PaintBox.Canvas do
-    begin
-      Pen.Color:=clBlack;
-      Brush.Color:=clBlack;
-      Rectangle(32*X+9,32*Y+7,32*X+13,32*Y+11);
-      Rectangle(32*X+11,32*Y+5,32*X+19,32*Y+7);
-      Rectangle(32*X+17,32*Y+7,32*X+21,32*Y+13);
-      Rectangle(32*X+15,32*Y+14,32*X+19,32*Y+15);
-      Rectangle(32*X+13,32*Y+15,32*X+17,32*Y+19);
-      Rectangle(32*X+13,32*Y+21,32*X+17,32*Y+25);
-    end;
 end;
 
 //рисует поле
@@ -385,22 +213,13 @@ begin
   FormMain.Width:=FormMain.GamePanel.Width+38;
   FormMain.Height:=FormMain.GamePanel.Height+169;
   FormMain.BtnRestart.Left:=FormMain.PanelHUD.Width div 2 - 25;
-with FormMain.PaintBox, FormMain.PaintBox.canvas do
-  begin
-  Brush.Color:=clSilver;
-  Pen.Color:=clSilver;
-  Rectangle(0,0,32*xs,32*ys);
   openTiles:=0;
-  Pen.Width:=1;
-      for i := 0 to (xs-1) do begin
-      for j := 0 to (ys-1) do begin
-      Pen.Color:=clWhite;
-      polyline([Point(32*i,32*(j+1)),Point(32*i,32*j),Point(32*(i+1),32*j)]);
-      polyline([Point(32*i+1,32*(j+1)-2),Point(32*i+1,32*j+1),Point(32*(i+1)-1,32*j+1)]);
-      Pen.Color:=clBtnShadow;
-      polyline([Point(32*i,32*(j+1)-1),Point(32*(i+1)-1,32*(j+1)-1),Point(32*(i+1)-1,32*j)]);
-      polyline([Point(32*i+1,32*(j+1)-2),Point(32*(i+1)-2,32*(j+1)-2),Point(32*(i+1)-2,32*j+1)]);
-      end;
+  for i := 0 to (xs-1) do begin
+    for j := 0 to (ys-1) do begin
+      if TileStates[i,j]=0 then
+      FormMain.ImageListTiles.Draw(FormMain.PaintBox.Canvas,i*32,j*32,9,True)
+      else
+      FormMain.ImageListTiles.Draw(FormMain.PaintBox.Canvas,i*32,j*32,16,True)
     end;
   end;
 end;
@@ -419,8 +238,10 @@ begin
   if (MinesGend) then begin
     for i := 0 to xs-1 do begin
       for j := 0 to ys-1 do begin
-      TileStates[i,j]:=0;
-      MinesLocation[i,j]:=0
+        if TileStates[i,j]<=1 then begin
+          TileStates[i,j]:=0;
+          MinesLocation[i,j]:=0
+        end;
       end;
     end;
   end;
@@ -430,6 +251,8 @@ begin
   draw();
   recount;
   PanelTimer.Caption:='000';
+  FormMain.Top:=(720-FormMain.Height)div 2;
+  FormMain.Left:=(1366-FormMain.Width)div 2;
 end;
 
 //флаг/вопрос
@@ -439,23 +262,21 @@ begin
   //флаг
     1:begin
     TileStates[TileMouseX,TileMouseY]:=-1;
-    Clear(TileMouseX,TileMouseY);
-    Flag(TileMouseX,TileMouseY);
+    FormMain.ImageListTiles.Draw(FormMain.PaintBox.Canvas,TileMouseX*32,TileMouseY*32,10,True);
     inc(flags);
     recount;
     end;
   //вопрос
     -1: begin
     TileStates[TileMouseX,TileMouseY]:=-2;
-    Clear(TileMouseX,TileMouseY);
-    Question(TileMouseX,TileMouseY);
+    FormMain.ImageListTiles.Draw(FormMain.PaintBox.Canvas,TileMouseX*32,TileMouseY*32,11,True);
     dec(flags);
     recount;
     end;
   //пустота
     -2:begin
     TileStates[TileMouseX,TileMouseY]:=1;
-    Clear(TileMouseX,TileMouseY);
+    FormMain.ImageListTiles.Draw(FormMain.PaintBox.Canvas,TileMouseX*32,TileMouseY*32,9,True);
     end;
   end;
 end;

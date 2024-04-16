@@ -1,0 +1,55 @@
+unit UnitEditor;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, System.ImageList,
+  Vcl.ImgList, Vcl.StdCtrls;
+
+type
+  TFormEditor = class(TForm)
+    PanelHUD: TPanel;
+    PanelEditor: TPanel;
+    ButtonedEditWidth: TButtonedEdit;
+    ButtonedEditHeight: TButtonedEdit;
+    ButtonedEditBombs: TButtonedEdit;
+    ImageListButtons: TImageList;
+    PaintBoxEditor: TPaintBox;
+    procedure EditorStart(Sender: TObject);
+    procedure MinusWidth(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FormEditor: TFormEditor;
+
+implementation
+
+{$R *.dfm}
+
+uses UnitMain;
+
+procedure TFormEditor.EditorStart(Sender: TObject);
+begin
+ FormEditor.Width:=FormMain.GamePanel.Width;
+ FormEditor.Height:=FormMain.GamePanel.Height+100;
+ PanelHUD.Height:=100;
+ ButtonedEditWidth.Left:=(FormEditor.Width-ButtonedEditWidth.Width)div 2;
+ ButtonedEditHeight.Left:=ButtonedEditWidth.Left;
+ ButtonedEditBombs.Left:=ButtonedEditWidth.Left;
+end;
+
+procedure TFormEditor.MinusWidth(Sender: TObject);
+begin
+  ButtonedEditWidth.Text:=IntToStr(StrToInt(ButtonedEditWidth.Text)-1);
+  FormEditor.Width:=FormEditor.Width-32;
+  ButtonedEditWidth.Left:=(FormEditor.Width-ButtonedEditWidth.Width)div 2;
+  ButtonedEditHeight.Left:=ButtonedEditWidth.Left;
+  ButtonedEditBombs.Left:=ButtonedEditWidth.Left;
+end;
+
+end.

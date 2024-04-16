@@ -1,0 +1,28 @@
+program Gerasimov_Minesweeper;
+
+
+
+
+
+
+
+
+
+
+
+uses
+  Vcl.Forms,
+  UnitMain in 'UnitMain.pas' {FormMain},
+  UnitSettings in 'UnitSettings.pas' {FormSettings},
+  UnitHelp in 'UnitHelp.pas' {FormHelp};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  AApplication.CreateForm(TFormMain, FormMain);
+  AApplication.CreateForm(TFormSettings, FormSettings);
+  AApplication.CreateForm(TFormHelp, FormHelp);
+  lication.Run;
+end.

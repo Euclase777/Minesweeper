@@ -87,6 +87,7 @@
         <DCC_RangeChecking>true</DCC_RangeChecking>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
+        <Icon_MainIcon>Gerasimov_Minesweeper_Icon.ico</Icon_MainIcon>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -114,46 +115,6 @@
             <Form>FormHelp</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <RcItem Include="..\Sprites\Timer\0.bmp">
-            <ResourceType>BITMAP</ResourceType>
-            <ResourceId>0</ResourceId>
-        </RcItem>
-        <RcItem Include="..\Sprites\Timer\1.bmp">
-            <ResourceType>BITMAP</ResourceType>
-            <ResourceId>1</ResourceId>
-        </RcItem>
-        <RcItem Include="..\Sprites\Timer\2.bmp">
-            <ResourceType>BITMAP</ResourceType>
-            <ResourceId>2</ResourceId>
-        </RcItem>
-        <RcItem Include="..\Sprites\Timer\3.bmp">
-            <ResourceType>BITMAP</ResourceType>
-            <ResourceId>3</ResourceId>
-        </RcItem>
-        <RcItem Include="..\Sprites\Timer\4.bmp">
-            <ResourceType>BITMAP</ResourceType>
-            <ResourceId>4</ResourceId>
-        </RcItem>
-        <RcItem Include="..\Sprites\Timer\5.bmp">
-            <ResourceType>BITMAP</ResourceType>
-            <ResourceId>5</ResourceId>
-        </RcItem>
-        <RcItem Include="..\Sprites\Timer\6.bmp">
-            <ResourceType>BITMAP</ResourceType>
-            <ResourceId>6</ResourceId>
-        </RcItem>
-        <RcItem Include="..\Sprites\Timer\7.bmp">
-            <ResourceType>BITMAP</ResourceType>
-            <ResourceId>7</ResourceId>
-        </RcItem>
-        <RcItem Include="..\Sprites\Timer\8.bmp">
-            <ResourceType>BITMAP</ResourceType>
-            <ResourceId>8</ResourceId>
-        </RcItem>
-        <RcItem Include="..\Sprites\Timer\9.bmp">
-            <ResourceType>BITMAP</ResourceType>
-            <ResourceId>9</ResourceId>
-        </RcItem>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -180,69 +141,9 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="..\Sprites\Timer\6.bmp" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="..\Sprites\Timer\1.bmp" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="..\Sprites\Timer\7.bmp" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="Win32\Debug\Gerasimov_Minesweeper.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>Gerasimov_Minesweeper.exe</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="..\Sprites\Timer\9.bmp" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="..\Sprites\Timer\8.bmp" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="..\Sprites\Timer\2.bmp" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="..\Sprites\Timer\0.bmp" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="..\Sprites\Timer\5.bmp" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="..\Sprites\Timer\3.bmp" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="..\Sprites\Timer\4.bmp" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

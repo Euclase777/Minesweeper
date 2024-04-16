@@ -1,0 +1,103 @@
+unit UnitSettings;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
+
+type
+  TFormSettings = class(TForm)
+    Difficulty: TRadioGroup;
+    RadioButtonEasy: TRadioButton;
+    RadioButtonMedium: TRadioButton;
+    RadioButtonHard: TRadioButton;
+    RadioButtonSpecial: TRadioButton;
+    TextWidth: TStaticText;
+    TextHeight: TStaticText;
+    TextMines: TStaticText;
+    EditWidth: TEdit;
+    EditMines: TEdit;
+    EditHeight: TEdit;
+    ButtonOk: TButton;
+    ButtonCancel: TButton;
+    procedure DifficultyEasy(Sender: TObject);
+    procedure DifficultyMedium(Sender: TObject);
+    procedure DifficultyHard(Sender: TObject);
+    procedure DifficultySpecial(Sender: TObject);
+    procedure DifficultyApply(Sender: TObject);
+    procedure DifficultyCancel(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FormSettings: TFormSettings;
+
+implementation
+
+{$R *.dfm}
+
+uses UnitMain;
+
+//кнопка ОК
+procedure TFormSettings.DifficultyApply(Sender: TObject);
+begin
+  with FormMain do begin
+    ys:=StrToInt(EditHeight.Text);
+    xs:=StrToInt(EditWidth.Text);
+    MinesAm:=StrToInt(EditMines.Text);
+  end;
+  FormSettings.Close;
+end;
+
+//кнопка отмена
+procedure TFormSettings.DifficultyCancel(Sender: TObject);
+begin
+  FormSettings.Close;
+end;
+
+//новичок
+procedure TFormSettings.DifficultyEasy(Sender: TObject);
+begin
+ EditHeight.Text:='9';
+ EditHeight.Enabled:=false;
+ EditWidth.Text:='9';
+ EditWidth.Enabled:=false;
+ EditMines.Text:='10';
+ EditMines.Enabled:=false;
+end;
+
+//любитель
+procedure TFormSettings.DifficultyMedium(Sender: TObject);
+begin
+  EditHeight.Text:='16';
+  EditHeight.Enabled:=false;
+  EditWidth.Text:='16';
+  EditWidth.Enabled:=false;
+  EditMines.Text:='40';
+  EditMines.Enabled:=false;
+end;
+
+//профессионал
+procedure TFormSettings.DifficultyHard(Sender: TObject);
+begin
+  EditHeight.Text:='16';
+  EditHeight.Enabled:=false;
+  EditWidth.Text:='30';
+  EditWidth.Enabled:=false;
+  EditMines.Text:='99';
+  EditMines.Enabled:=false;
+end;
+
+//особый
+procedure TFormSettings.DifficultySpecial(Sender: TObject);
+begin
+  EditHeight.Enabled:=true;
+  EditWidth.Enabled:=true;
+  EditMines.Enabled:=true;
+end;
+
+end.
